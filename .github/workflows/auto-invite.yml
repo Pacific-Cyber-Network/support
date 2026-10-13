@@ -17,24 +17,24 @@ jobs:
             const org = context.repo.owner;
 
             try {
-              console.log(`Enviando invitación formal a @${username}...`);
+              console.log(`Sending official invitation to @${username}...`);
 
-              // Envía la invitación oficial a la organización
+              // Sends the official organization invitation
               await github.rest.orgs.setMembershipForUser({
                 org: org,
                 username: username,
                 role: 'member'
               });
 
-              // Comentario automático en el Issue
+              // Welcome comment in English
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: context.payload.issue.number,
-                body: `👋 **¡Hola @${username}!**\n\nTe hemos enviado una invitación automática para unirte a **${org}**[cite: 8]. Revisa tus notificaciones de GitHub o entra directamente a https://github.com/orgs/${org}/invitation para aceptarla. ¡Bienvenido al equipo! 🌊`
+                body: `👋 **Welcome @${username}!**\n\nAn official invitation to join **${org}** has been sent to your account[cite: 8]. Please check your GitHub notifications or go directly to https://github.com/orgs/${org}/invitation to accept it. Welcome aboard! 🌊`
               });
 
-              // Cierra el Issue automáticamente
+              // Automatically close the issue
               await github.rest.issues.update({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -43,13 +43,13 @@ jobs:
               });
 
             } catch (error) {
-              console.error("ERROR DETALLADO:", error.message);
+              console.error("DETAILED ERROR:", error.message);
 
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: context.payload.issue.number,
-                body: `⚠️ No se pudo procesar la invitación automática para @${username}. Un administrador lo revisará pronto.`
+                body: `⚠️ Couldn't process auto-invite for @${username}. Please wait for an admin to process it manually.`
               });
 
               core.setFailed(error.message);
