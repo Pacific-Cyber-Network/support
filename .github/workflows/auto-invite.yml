@@ -17,24 +17,30 @@ jobs:
             const org = context.repo.owner;
 
             try {
-              console.log(`Enviando invitación a @${username}...`);
+              console.log(`Añadiendo a @${username} a la org...`);
 
-              // Método actualizado de Octokit / GitHub API
+              // 1. Añadir al usuario a la organización
               await github.rest.orgs.setMembershipForUser({
                 org: org,
                 username: username,
                 role: 'member'
               });
 
-              // Mensaje de bienvenida
+              // 2. HACER LA MEMBRESÍA PÚBLICA AUTOMÁTICAMENTE
+              await github.rest.orgs.setPublicMembershipForAuthenticatedUser({
+                org: org,
+                username: username
+              });
+
+              // 3. Comentario de bienvenida
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: context.payload.issue.number,
-                body: `👋 **Welcome @${username}!**\n\nAn invitation to join **${org}** has been sent to your account! Check your GitHub notifications or email to accept it.\n\nEnjoy your new profile badge! 🌊`
+                body: `👋 **Welcome @${username}!**\n\nYou have been automatically added to **${org}** and your membership is now public! Check your profile badge. 🌊`
               });
 
-              // Cerrar Issue automáticamente
+              // 4. Cerrar Issue
               await github.rest.issues.update({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
