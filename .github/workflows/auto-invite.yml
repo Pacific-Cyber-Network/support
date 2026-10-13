@@ -17,21 +17,24 @@ jobs:
             const org = context.repo.owner;
 
             try {
-              console.log(`Intentando invitar a ${username} a la org ${org}...`);
-              
-              await github.rest.orgs.createOrUpdateMembershipForUser({
+              console.log(`Enviando invitación a @${username}...`);
+
+              // Método actualizado de Octokit / GitHub API
+              await github.rest.orgs.setMembershipForUser({
                 org: org,
                 username: username,
                 role: 'member'
               });
 
+              // Mensaje de bienvenida
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: context.payload.issue.number,
-                body: `👋 **Welcome @${username}!**\n\nAn invitation to join **${org}** has been sent!`
+                body: `👋 **Welcome @${username}!**\n\nAn invitation to join **${org}** has been sent to your account! Check your GitHub notifications or email to accept it.\n\nEnjoy your new profile badge! 🌊`
               });
 
+              // Cerrar Issue automáticamente
               await github.rest.issues.update({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -40,9 +43,7 @@ jobs:
               });
 
             } catch (error) {
-              // ESTO MOSTRARÁ EL ERROR REAL EN LOS LOGS DE ACTIONS
-              console.error("ERROR DETALLADO DE LA API:", error.message);
-              console.error("STATUS CODE:", error.status);
+              console.error("ERROR DETALLADO:", error.message);
 
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
@@ -50,7 +51,6 @@ jobs:
                 issue_number: context.payload.issue.number,
                 body: `⚠️ Couldn't process auto-invite for @${username}. Please wait for an admin to process it manually.`
               });
-              
-              // Hace que el workflow marque X roja para ver el log
+
               core.setFailed(error.message);
             }
