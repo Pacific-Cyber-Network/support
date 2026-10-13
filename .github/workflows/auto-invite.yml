@@ -17,30 +17,24 @@ jobs:
             const org = context.repo.owner;
 
             try {
-              console.log(`Añadiendo a @${username} a la org...`);
+              console.log(`Enviando invitación formal a @${username}...`);
 
-              // 1. Añadir al usuario a la organización
+              // Envía la invitación oficial a la organización
               await github.rest.orgs.setMembershipForUser({
                 org: org,
                 username: username,
                 role: 'member'
               });
 
-              // 2. HACER LA MEMBRESÍA PÚBLICA AUTOMÁTICAMENTE
-              await github.rest.orgs.setPublicMembershipForAuthenticatedUser({
-                org: org,
-                username: username
-              });
-
-              // 3. Comentario de bienvenida
+              // Comentario automático en el Issue
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: context.payload.issue.number,
-                body: `👋 **Welcome @${username}!**\n\nYou have been automatically added to **${org}** and your membership is now public! Check your profile badge. 🌊`
+                body: `👋 **¡Hola @${username}!**\n\nTe hemos enviado una invitación automática para unirte a **${org}**[cite: 8]. Revisa tus notificaciones de GitHub o entra directamente a https://github.com/orgs/${org}/invitation para aceptarla. ¡Bienvenido al equipo! 🌊`
               });
 
-              // 4. Cerrar Issue
+              // Cierra el Issue automáticamente
               await github.rest.issues.update({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -55,7 +49,7 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: context.payload.issue.number,
-                body: `⚠️ Couldn't process auto-invite for @${username}. Please wait for an admin to process it manually.`
+                body: `⚠️ No se pudo procesar la invitación automática para @${username}. Un administrador lo revisará pronto.`
               });
 
               core.setFailed(error.message);
