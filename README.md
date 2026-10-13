@@ -13,7 +13,6 @@ We are open to developers, students, and tech enthusiasts from all around the wo
 
 1. **Open an Issue:** Click on the **Issues** tab above and create a **New Issue**.
 2. **Request Membership:** Use the title `Request to join Pacific-Cyber-Network` and drop your GitHub username in the description.
-3. **Accept Invitation:** Our team (or automated workflow) will review and send you an invitation to join the organization shortly!
 
 ---
 
