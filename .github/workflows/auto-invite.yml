@@ -31,7 +31,7 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: context.payload.issue.number,
-                body: `👋 **Welcome @${username}!**\n\nAn official invitation to join **${org}** has been sent to your account[cite: 8]. Please check your GitHub notifications or go directly to https://github.com/orgs/${org}/invitation to accept it. Welcome aboard! 🌊`
+                body: `👋 **Welcome @${username}!**\n\nAn official invitation to join **${org}** has been sent to your account. Please check your GitHub notifications or go directly to https://github.com/orgs/${org}/invitation to accept it. Welcome! `
               });
 
               // Automatically close the issue
