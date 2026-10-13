@@ -17,22 +17,21 @@ jobs:
             const org = context.repo.owner;
 
             try {
-              // Enviar invitación a la Organización por API
+              console.log(`Intentando invitar a ${username} a la org ${org}...`);
+              
               await github.rest.orgs.createOrUpdateMembershipForUser({
                 org: org,
                 username: username,
                 role: 'member'
               });
 
-              // Publicar comentario de bienvenida
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: context.payload.issue.number,
-                body: `👋 **Welcome @${username}!**\n\nAn invitation to join **${org}** has been sent to your account! Check your GitHub notifications or email to accept it.\n\nEnjoy your new profile badge! 🌊`
+                body: `👋 **Welcome @${username}!**\n\nAn invitation to join **${org}** has been sent!`
               });
 
-              // Cerrar la Issue automáticamente
               await github.rest.issues.update({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -41,11 +40,17 @@ jobs:
               });
 
             } catch (error) {
-              console.error(error);
+              // ESTO MOSTRARÁ EL ERROR REAL EN LOS LOGS DE ACTIONS
+              console.error("ERROR DETALLADO DE LA API:", error.message);
+              console.error("STATUS CODE:", error.status);
+
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: context.payload.issue.number,
                 body: `⚠️ Couldn't process auto-invite for @${username}. Please wait for an admin to process it manually.`
               });
+              
+              // Hace que el workflow marque X roja para ver el log
+              core.setFailed(error.message);
             }
