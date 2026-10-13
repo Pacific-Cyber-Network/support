@@ -1,6 +1,6 @@
 <!-- HEADER -->
 <h1 align="center">
-  🌊 Pacific-Cyber-Network 🌊
+   Pacific-Cyber-Network 
 </h1>
 
 <p align="center">
